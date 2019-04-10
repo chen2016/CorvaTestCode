@@ -13,6 +13,10 @@ app.use(express.urlencoded());
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
+app.get("/getNames", asyncMiddleware(async (req, res, next) => {
+   res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+}))
+
 app.post('/arraySubtract/:request_id', asyncMiddleware(async (request, response, next) => {
    
    const request_id = request.params.request_id;
