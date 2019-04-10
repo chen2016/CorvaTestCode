@@ -86,8 +86,14 @@ function elementwiseSubtraction(data)
    return a;
 }
 
-var server = app.listen(8081, '127.0.0.1', function () {
-   const host = server.address().address;
-   const port = server.address().port;
-   console.log('Example application listening at http://%s:%s', host, port);
+// var server = app.listen(8080, '127.0.0.1', function () {
+//    const host = server.address().address;
+//    const port = server.address().port;
+//    console.log('Example application listening at http://%s:%s', host, port);
+var appPort = (process.env.PORT || 8080);
+app.set("port", appPort);
+var port = app.get("port");
+var server = app.listen(port, function () {
+    console.log("port is: " + port);
+    console.log("Server started listening...");
 })
