@@ -1,4 +1,5 @@
 const express = require('express');
+const debug = require('debug')('app');
 const app = express();
 
 const asyncMiddleware = func =>
@@ -14,11 +15,13 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 app.get("/getNames", asyncMiddleware(async (req, res, next) => {
+   debug("/getNames requested");
    res.json(["Tony","Lisa","Michael","Ginger","Food"]);
 }))
 
 app.post('/arraySubtract/:request_id', asyncMiddleware(async (request, response, next) => {
    
+   debug("/arraySubtract requested");
    const request_id = request.params.request_id;
    const timestamp = request.body.timestamp;
    const source_data = request.body.data;
