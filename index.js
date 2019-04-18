@@ -1,6 +1,7 @@
 const express = require('express');
 const debug = require('debug')('app');
 const app = express();
+const _ = require('lodash');
 
 const asyncMiddleware = func =>
   (req, res, next) => {
@@ -14,10 +15,60 @@ app.use(express.urlencoded());
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-app.get("/getNames", asyncMiddleware(async (req, res, next) => {
-   debug("/getNames requested");
-   res.json(["Tony","Lisa","Michael","Ginger","Food"]);
-}))
+const personData = [{
+   "id": 1,
+   "firstName": "Ted",
+   "lastName": "Neward",
+   "status": "MEANing"
+ },
+ {
+   "id": 2,
+   "firstName": "Brian",
+   "lastName": "Randell",
+   "status": "TFSing"
+ },
+ {
+   "id": 3,
+   "firstName": "Taylor",
+   "lastName": "Smith",
+   "status": "Nodeing"
+ },
+ {
+   "id": 4,
+   "firstName": "Kenneth",
+   "lastName": "Timberlin",
+   "status": "Giting"
+ }];
+
+var getAllPersons = asyncMiddleware(async (req, res, next) => {
+   debug("/getAllPersons requested");
+   let response = personData;
+   res.end(JSON.stringify(response));
+});
+
+app.get('/persons', getAllPersons);
+
+app.param('personId', function (req, res, next, personId) {
+  debug("personId found:",personId);
+  var person = _.find(personData, function(it) {
+    return personId == it.id;
+  });
+  debug("person:", person);
+  req.person = person;
+  next();
+});
+
+var getPerson = asyncMiddleware(async (req, res, next) => {
+   debug("/getPerson requested");
+   if (req.person) {
+      res.send(200, JSON.stringify(req.person));
+    }
+    else {
+      res.send(400, { message: "Unrecognized identifier: " + identifier });
+    }
+});
+
+app.get('/persons/:personId', getPerson);
 
 app.post('/arraySubtract/:request_id', asyncMiddleware(async (request, response, next) => {
    
